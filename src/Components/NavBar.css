@@ -1,0 +1,62 @@
+/* Overall navbar layout */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 12px 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Logo styling */
+.logo {
+  cursor: pointer;
+  height: 40px;
+  width: auto;
+}
+
+/* Right-side buttons */
+.navbar-right {
+  display: flex;
+  gap: 12px;
+}
+
+.btn {
+  padding: 8px 16px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* Sign In button style */
+.sign-in {
+  background-color: transparent;
+  color: #007bff;
+  border: 1px solid #007bff;
+}
+
+.sign-in:hover {
+  transition: 0.5s;
+  background-color: #007bff;
+  color: white;
+}
+
+/* Sign Up button style */
+.sign-up {
+  background-color: #007bff;
+  color: white;
+
+}
+
+.sign-up:hover {
+  transition: 0.5s;
+  background-color: transparent;
+  color: #007bff;
+  border: 1px solid #007bff;
+}

@@ -1,18 +1,16 @@
-import './App.css';
-import NavBar from './Components/NavBar';
-import Hero from './Components/Hero';
-import HeroCards from './Components/HeroCards';
-import Footer from './Components/Footer';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Home from './pages/Home/Home';     
+import SignUp from './pages/SignUp/SignUp'; 
 
 function App() {
   return (
-    <>
-      <NavBar />
-      <Hero />
-      <HeroCards />
-      <Footer />
-    </>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/signup" element={<SignUp />} />
+        </Routes>
   );
 }
 
 export default App;
+

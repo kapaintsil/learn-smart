@@ -24,10 +24,10 @@
 
 /* Smaller card width with light blue shadow */
 .card {
+  width: 100px;
   position: relative;
   flex: 0 0 28%;
-  /* background-color: #f8f9fa; */
-  padding: 50px 24px 24px; /* more top padding for icon space */
+  padding: 50px 24px 24px; 
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -83,6 +83,7 @@
   }
 
   .card {
+    margin: 10px;
     width: 100%;
     max-width: 500px;
   }

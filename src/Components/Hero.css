@@ -30,10 +30,10 @@
   left: 50%;
   bottom: -16px; /* push it further down */
   transform: translateX(-50%);
-  width: 300px;           /* wider shadow */
-  height: 200px;           /* taller shadow */
-  background: #9B44FF; /* brighter purple */
-  filter: blur(150px);     /* very soft glow */
+  width: 200px;           /* wider shadow */
+  height: 300px;           /* taller shadow */
+  background: #a36bfa; /* brighter purple */
+  filter: blur(170px);     /* very soft glow */
   border-radius: 50%;
   pointer-events: none;   /* make sure it's non-interactive */
 }
@@ -43,7 +43,7 @@
   color:  #001880;
 }
 .span-2 {
-  background: linear-gradient(to right, #00c6ff, #0072ff);
+  background: linear-gradient(to right, #0809ee, #a36bfa);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: bold;

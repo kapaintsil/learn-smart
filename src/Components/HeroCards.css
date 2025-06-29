@@ -5,10 +5,9 @@
   text-align: center;
 }
 
-/* Section title */
 .hero-cards-header {
-  letter-spacing: 3px;
-  font-family: "Lobster", sans-serif;
+  font-style: italic;
+  font-family: "IBM Plex Serif", serif;
   font-size: 2.5rem;
   font-weight: bold;
   color: #001880;
@@ -51,6 +50,11 @@
 
 /* Responsive: Stack cards vertically on small screens */
 @media (max-width: 900px) {
+
+  .hero-cards-header {
+    font-size: 1.5rem;
+  }
+
   .cards-container {
     flex-direction: column;
     align-items: center;

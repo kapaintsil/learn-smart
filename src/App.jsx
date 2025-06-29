@@ -5,12 +5,11 @@ import SignUp from './Pages/SignUp/SignUp';
 
 function App() {
   return (
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/signup" element={<SignUp />} />
-        </Routes>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/signup" element={<SignUp />} />
+    </Routes>
   );
 }
 
 export default App;
-

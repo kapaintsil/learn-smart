@@ -24,13 +24,35 @@
 
 /* Smaller card width with light blue shadow */
 .card {
-  flex: 0 0 28%; /* ⬅️ reduced from 32% */
-  background-color: white;
-  padding: 24px;
+  position: relative;
+  flex: 0 0 28%;
+  /* background-color: #f8f9fa; */
+  padding: 50px 24px 24px; /* more top padding for icon space */
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
 }
+
+/* Wrap the icon to position it above */
+.icon-wrapper {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #fff;
+  /* padding: 10px; */
+  border-radius: 50%;
+  /* box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); */
+}
+
+/* Style for the icon image */
+.card-icon {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+}
+
 
 .card:hover {
   transform: translateY(-4px);

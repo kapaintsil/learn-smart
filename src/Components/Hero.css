@@ -1,9 +1,10 @@
 .hero {
+  margin-top: 80px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 60px 40px;
-  background-color: #f9f9f9;
+  background-color: white;
   flex-wrap: wrap;
 }
 
@@ -15,12 +16,28 @@
 }
 
 .hero-heading {
+  position: relative; /* needed for pseudo-element */
   text-transform: uppercase;
   font-size: 3rem;
   font-weight: bold;
   color: #222;
   margin-bottom: 20px;
 }
+
+.hero-heading::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -16px; /* push it further down */
+  transform: translateX(-50%);
+  width: 300px;           /* wider shadow */
+  height: 200px;           /* taller shadow */
+  background: #9B44FF; /* brighter purple */
+  filter: blur(150px);     /* very soft glow */
+  border-radius: 50%;
+  pointer-events: none;   /* make sure it's non-interactive */
+}
+
 
 .span-1 {
   color:  #001880;

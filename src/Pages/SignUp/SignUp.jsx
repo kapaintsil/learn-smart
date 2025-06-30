@@ -1,6 +1,6 @@
 import React from 'react';
 import './SignUp.css';import NavBar from '../../Components/NavBar';
-import signupImage from '../../assets/images/learner.png';
+import signupImage from '../../assets/images/Learner.png';
 
 function SignUp() {
   return (

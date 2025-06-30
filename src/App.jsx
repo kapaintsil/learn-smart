@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import Home from './Pages/Home/Home.jsx';     
-import SignUp from './Pages/SignUp/SignUp.jsx'; 
+import Home from './Pages_temp/Home/Home.jsx';     
+import SignUp from './Pages_temp/SignUp/SignUp.jsx'; 
 
 function App() {
   return (

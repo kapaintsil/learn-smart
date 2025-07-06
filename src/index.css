@@ -1,3 +1,21 @@
+:root {
+  --primary-color: #4a90e2;
+  --text-color: #333;
+  --border-radius: 8px;
+}
+
 body {
-    font-family: "Roboto", sans-serif;
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: white;
+  color: var(--text-color);
+}
+
+button {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
 }

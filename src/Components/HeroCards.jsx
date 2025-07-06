@@ -1,9 +1,6 @@
 import React from 'react';
 import './HeroCards.css';
-
-import integrationIcon from '../assets/icons/integration.png';
-import person from '../assets/icons/person.png';
-import check from '../assets/icons/check.png';
+import heroCardFeatures from '../heroCardFeatures';
 
 function HeroCards() {
   return (
@@ -13,29 +10,19 @@ function HeroCards() {
       </h2>
 
       <div className="cards-container">
-        <div className="card">
-          <div className="icon-wrapper">
-            <img src={integrationIcon} alt="Integration Icon" className="card-icon" />
+        {heroCardFeatures.map((feature, index) => (
+          <div className="card" key={index}>
+            <div className="icon-wrapper">
+              <img
+                src={feature.logo}
+                alt={`${feature.title} Icon`}
+                className="card-icon"
+              />
+            </div>
+            <h3>{feature.title}</h3>
+            <p>{feature.description}</p>
           </div>
-          <h3>Seamless Integration</h3>
-          <p>Access essential learning tools, from writing assistants to transcribers all in one place.</p>
-        </div>
-
-        <div className="card">
-          <div className="icon-wrapper">
-            <img src={person} alt="Personalized Icon" className="card-icon" />
-          </div>
-          <h3>Personalized Experience</h3>
-          <p>Get tailored support based on your learning style and preferences, and learn at your own pace.</p>
-        </div>
-
-        <div className="card">
-          <div className="icon-wrapper">
-            <img src={check} alt="Focus Icon" className="card-icon" />
-          </div>
-          <h3>Distraction Free</h3>
-          <p>Focus on completing your task with no interruptions. LearnSmart has everything you need.</p>
-        </div>
+        ))}
       </div>
     </section>
   );

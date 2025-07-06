@@ -1,6 +1,6 @@
 import React from 'react';
 import './Footer.css';
-import footerLogo from '../assets/icons/plane.png'; // adjust path if needed
+import footerLogo from '../assets/icons/LS-logo.png'; // adjust path if needed
 
 function Footer() {
   return (

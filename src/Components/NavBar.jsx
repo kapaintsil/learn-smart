@@ -13,7 +13,7 @@ function NavBar() {
         <img src={logo} alt="App Logo" onClick={() => navigate('/')} className="logo" />
       </div>
       <div className="navbar-right">
-        <button className="btn sign-in" onClick={() => navigate('/login')}>
+        <button className="btn sign-in" onClick={() => navigate('/signin')}>
           Sign In
         </button>
         <button className="btn sign-up" onClick={() => navigate('/signup')}>

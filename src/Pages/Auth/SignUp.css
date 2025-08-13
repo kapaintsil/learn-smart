@@ -21,7 +21,7 @@
 /* White signup card */
 .signup-box {
   background-color: #ffffff;
-  padding: 10px 30px;
+  padding: 10px 30px 30px 30px;
   border-radius: 12px 0 0 12px;
   box-shadow: 0 6px 20px rgba(0, 123, 255, 0.15);
   max-width: 350px;
@@ -40,11 +40,12 @@
 .signup-form {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 10px;
 }
 
 /* Input styles */
-.signup-form input {
+.signup-form .input-group input {  
+  width: 90%;
   color: gray;
   padding: 10px 14px;
   font-size: 1rem;
@@ -55,6 +56,7 @@
 
 .signup-form input:focus {
   border-color: #007bff;
+  box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.15);
   outline: none;
 }
 
@@ -77,6 +79,27 @@ button {
 
 .signup-button:hover {
   background-color: #0056b3;
+}
+
+.signup-button:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+.password-field input {
+  position: relative;
+  /* width: 100% !important; */
+}
+
+
+.toggle-password {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: #888;
 }
 
 /* Text under form */
@@ -109,16 +132,21 @@ button {
   background: white;
 }
 
+.google-button:focus{
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
 .google-logo {
   width: 20px;
 }
 
 .signup-image {
-  height: 500px;
-  width: 398px;
+  height: 495px;
+  width: 350px;
   margin: 10px 0 0 -15px;
   display: block;
-  border-radius: 5px;
+  border-radius: 0 40px 40px 0;
 }
 
 

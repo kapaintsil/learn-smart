@@ -1,6 +1,6 @@
 import React from 'react';
 import './HeroCards.css';
-import heroCardFeatures from '../heroCardFeatures';
+import heroCardFeatures from '../data/heroCardFeatures';
 
 function HeroCards() {
   return (

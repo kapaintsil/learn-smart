@@ -2,9 +2,8 @@ import React from 'react';
 import './SignUp.css';
 import NavBar from '../../Components/NavBar';
 import signupImage from '../../assets/images/Learner.png';
-import googleLogo from '../../assets/icons/google-logo.png';
-import websiteLogo from '../../assets/icons/website-logo.png';
-
+import googleLogo from '/icons/google-logo.png';
+import websiteLogo from '/icons/website-logo.png';
 import { useNavigate, Link } from 'react-router-dom';
 
 function SignUp() {
@@ -18,11 +17,17 @@ function SignUp() {
 
       <div className="signup-container">
         <div className="signup-box">
-          <h2>Welcome</h2>
+          <h2>Create Account</h2>
           <form className="signup-form">
-            <input type="email" placeholder="Email or Phone" required />
+            <input type="text" placeholder="Full Name" required />
+            <input type="email" placeholder="Email" required />
             <input type="password" placeholder="Password" required />
-            <button type="submit" className="signup-button">Continue</button>
+            <input type="password" placeholder="Confirm Password" required />
+
+            <button type="submit" className="signup-button"
+            >
+              Continue
+            </button>
 
             <p className="signup-login-text">
               Already have an account? <Link to="/login">Log in</Link>
@@ -41,7 +46,7 @@ function SignUp() {
           </form>
         </div>
 
-        <div>
+        <div className='signup-image-container'>
           <img src={signupImage} alt="Sign up illustration" className="signup-image" />
         </div>
       </div>

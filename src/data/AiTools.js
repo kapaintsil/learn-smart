@@ -1,17 +1,5 @@
 const aiTools =[
-  {
-    "id": "notebook-ai",
-    "name": "Notebook AI",
-    "icon": "/aiTools/Cd.png",
-    "description": "Smart note organizer that auto-tags topics and summarizes key points.",
-    "features": [
-      "Extracts key ideas from notes",
-      "Tags subjects/topics automatically",
-      "Generates summarized versions of long notes"
-    ],
-    "type": "text-analysis",
-    "status": "available"
-  },
+  
   {
     "id": "study-planner",
     "name": "Study Planner",
@@ -26,22 +14,9 @@ const aiTools =[
     "status": "available"
   },
   {
-    "id": "essay-assistant",
-    "name": "Essay Assistant",
-    "icon": "/aiTools/Group.png",
-    "description": "Brainstorms, outlines, and rewrites academic essays.",
-    "features": [
-      "Thesis suggestion and outline",
-      "Grammar correction and rewording",
-      "Essay expansion from short drafts"
-    ],
-    "type": "writing",
-    "status": "available"
-  },
-  {
     "id": "flashcard-generator",
     "name": "Flashcard Generator",
-    "icon": "/aiTools/speech.png",
+    "icon": "/aiTools/Cd.png",
     "description": "Automatically creates flashcards from documents or pasted text.",
     "features": [
       "Question-answer format",
@@ -77,7 +52,20 @@ const aiTools =[
     ],
     "type": "ai-tutor",
     "status": "available"
-  }
+  },
+  {
+    "id": "history",
+    "name": "History",
+    "icon": "/aiTools/Group.png",
+    "description": "Smart note organizer that auto-tags topics and summarizes key points.",
+    "features": [
+      "Extracts key ideas from notes",
+      "Tags subjects/topics automatically",
+      "Generates summarized versions of long notes"
+    ],
+    "type": "text-analysis",
+    "status": "available"
+  },
 ]
 
 export default aiTools;

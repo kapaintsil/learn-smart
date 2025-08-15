@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { handleFileUpload } from "../../../../utils/handleFileUpload";
 import { downloadPlan } from "../../../../utils/downloadPlan";
 import { saveToFirestore } from "../../../../utils/saveToFirestore";
-import { model } from "../../../../Firebase/firebase";
+import { addQuiz } from "../../../../utils/localStorage"; // ✅ Local storage import
+import { auth, model } from "../../../../Firebase/firebase";
 import "./QuizGenerator.css";
 import ReactMarkdown from "react-markdown";
 
-
 function QuizGenerator() {
+  const location = useLocation();
+
   const [file, setFile] = useState(null);
   const [textInput, setTextInput] = useState("");
   const [useText, setUseText] = useState(false);
@@ -17,12 +20,24 @@ function QuizGenerator() {
   const [quiz, setQuiz] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // ✅ Load saved quiz if opened from History
+  useEffect(() => {
+    if (location.state?.savedData) {
+      const saved = location.state.savedData;
+      setQuiz(saved.quiz || "");
+      setTextInput(saved.content || "");
+      setQuestionCount(saved.questionCount || 5);
+      setDifficulty(saved.difficulty || "medium");
+      setFormat(saved.format || "mcq");
+      setUseText(true);
+    }
+  }, [location]);
+
   const handleGenerateQuiz = async () => {
     if (!useText && !file) {
       alert("Please upload a file.");
       return;
     }
-
     if (useText && !textInput.trim()) {
       alert("Please enter text.");
       return;
@@ -44,13 +59,28 @@ function QuizGenerator() {
 
       setQuiz(text);
 
-      await saveToFirestore("quizzes", {
+      // ✅ Save to Firestore
+      await saveToFirestore(`users/${auth.currentUser.uid}/generatedItems`, {
+        title: `Quiz (${difficulty}) - ${new Date().toLocaleDateString()}`,
+        type: "quiz",
         content,
         quiz: text,
         questionCount,
         difficulty,
         format,
       });
+
+      // ✅ Save to Local Storage
+      addQuiz({
+        title: `Quiz (${difficulty}) - ${new Date().toLocaleDateString()}`,
+        type: "quiz",
+        content,
+        quiz: text,
+        questionCount,
+        difficulty,
+        format,
+      });
+
     } catch (error) {
       console.error("Quiz generation error:", error);
       setQuiz("Error generating quiz: " + error.message);
@@ -58,18 +88,20 @@ function QuizGenerator() {
       setLoading(false);
     }
   };
-const handleDownload = () => {
-  if (quiz) {
-    downloadPlan(quiz, "quiz.pdf", "Generated Quiz"); 
-  }
-};
 
+  const handleDownload = () => {
+    if (quiz) {
+      downloadPlan(quiz, "quiz.pdf", "Generated Quiz");
+    }
+  };
 
   return (
     <div className="quiz-container">
-       {quiz && (
+      {quiz && (
         <div className="quiz-output">
-          <pre><ReactMarkdown>{quiz}</ReactMarkdown></pre>
+          <pre>
+            <ReactMarkdown>{quiz}</ReactMarkdown>
+          </pre>
           <button className="download-btn" onClick={handleDownload}>
             Download PDF
           </button>
@@ -131,13 +163,14 @@ const handleDownload = () => {
             <option value="tf">True / False</option>
           </select>
         </label>
-         <button
-        className="generate-btn"
-        onClick={handleGenerateQuiz}
-        disabled={loading}
-      >
-        {loading ? "Generating..." : "Generate"}
-      </button>
+
+        <button
+          className="generate-btn"
+          onClick={handleGenerateQuiz}
+          disabled={loading}
+        >
+          {loading ? "Generating..." : "Generate"}
+        </button>
       </div>
     </div>
   );

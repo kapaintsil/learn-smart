@@ -139,10 +139,11 @@ button {
 
 .google-logo {
   width: 20px;
+  height: 20px;
 }
 
 .signup-image {
-  height: 495px;
+  height: 510px;
   width: 350px;
   margin: 10px 0 0 -15px;
   display: block;

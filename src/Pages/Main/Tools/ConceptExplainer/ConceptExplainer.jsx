@@ -1,15 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
-import { db, auth, model } from "../../../../Firebase/firebase";
+import { model } from "../../../../Firebase/firebase";
+import { saveToFirestore } from "../../../../utils/saveToFirestore";
 import { FaPaperPlane, FaRegTrashAlt } from "react-icons/fa";
 import "./ConceptExplainer.css";
+import ReactMarkdown from "react-markdown";
 
 const ConceptExplainer = ({
-  placeholder = "Ask about a concept...",
+  placeholder = "Ask about a anything...",
   initialValue = "",
 }) => {
   const [message, setMessage] = useState(initialValue);
   const [isSending, setIsSending] = useState(false);
-  const [messages, setMessages] = useState([]); // Chat history
+  const [messages, setMessages] = useState([]);
   const textAreaRef = useRef(null);
   const chatContainerRef = useRef(null);
 
@@ -30,67 +32,67 @@ const ConceptExplainer = ({
   // Auto-scroll to bottom on new messages
   useEffect(() => {
     if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
     }
   }, [messages]);
 
-  // Send message and get bot response with full conversation context
   const handleSend = async () => {
-    if (!message.trim() || isSending) return;
+    const trimmedMsg = message.trim();
+    if (!trimmedMsg || isSending) return;
 
     const userMsg = {
-      id: Date.now(),
-      text: message.trim(),
+      id: crypto.randomUUID(),
+      text: trimmedMsg,
       sender: "user",
-      timestamp: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
+      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     };
 
-    // Add user message to chat history immediately
     setMessages((prev) => [...prev, userMsg]);
     setIsSending(true);
 
     try {
-      // Build prompt with previous conversation for context
-      const conversationContext = messages
+      // Limit conversation context to last 10 messages to avoid huge prompts
+      const recentMessages = [...messages, userMsg].slice(-10);
+      const conversationContext = recentMessages
         .map((msg) => `${msg.sender === "user" ? "User" : "Bot"}: ${msg.text}`)
         .join("\n");
 
       const prompt = `
 You are a helpful assistant explaining concepts.
-
 Conversation history:
 ${conversationContext}
 
-User: ${message.trim()}
 Bot:`;
 
       const result = await model.generateContent(prompt);
       const botResponse = await result.response.text();
 
       const botMsg = {
-        id: Date.now() + 1,
+        id: crypto.randomUUID(),
         text: botResponse || "Sorry, I didn't understand. Could you rephrase?",
         sender: "bot",
-        timestamp: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       };
 
       setMessages((prev) => [...prev, botMsg]);
       setMessage("");
+
+      await saveToFirestore("conceptExplainerChats", {
+        conversation: [...recentMessages, botMsg],
+      });
+
     } catch (error) {
       console.error("Error generating AI response:", error);
       alert("Failed to get response. Please try again.");
     } finally {
       setIsSending(false);
+      textAreaRef.current?.focus();
     }
   };
 
-  // Send on Enter key without Shift
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey && !isSending) {
       e.preventDefault();
@@ -100,24 +102,20 @@ Bot:`;
 
   return (
     <div className="chat-container">
-      {/* Chat history */}
       <div ref={chatContainerRef} className="chat-history">
         {messages.map((msg) => (
           <div
             key={msg.id}
-            className={`message-wrapper ${
-              msg.sender === "user" ? "user-message" : "bot-message"
-            }`}
+            className={`message-wrapper ${msg.sender === "user" ? "user-message" : "bot-message"}`}
           >
             <div className="message">
-              <p>{msg.text}</p>
+              <ReactMarkdown>{msg.text}</ReactMarkdown>
               <span className="timestamp">{msg.timestamp}</span>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Input area */}
       <div className="input-container">
         <div className="input-wrapper">
           <textarea

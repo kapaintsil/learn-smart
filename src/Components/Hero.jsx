@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Hero.css';
 import heroImage from '../assets/images/hero-image.png';
 import { useNavigate } from 'react-router-dom';
+import { auth } from '../Firebase/firebase';
 
 function Hero() {
   const navigate = useNavigate();
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
 
   const headline = [
     { text: 'a centralized', className: 'span-1' },
@@ -12,6 +14,22 @@ function Hero() {
     { text: 'platform for', className: 'span-1' },
     { text: 'smarter learning', className: 'span-2' }
   ];
+
+  // Listen for auth state changes
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setUserLoggedIn(!!user);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleGetStarted = () => {
+    if (userLoggedIn) {
+      navigate('/aitools');
+    } else {
+      navigate('/signup');
+    }
+  };
 
   return (
     <section className="hero">
@@ -28,8 +46,8 @@ function Hero() {
           Find your research assistant, code helper, text-to-speech transcribers, 
           and other AI tools for you in one location.
         </p>
-        <button className="hero-button" onClick={() => navigate('/signup')}>
-          Get Started
+        <button className="hero-button" onClick={handleGetStarted}>
+          {userLoggedIn ? 'Go to Tools' : 'Get Started'}
         </button>
       </div>
 

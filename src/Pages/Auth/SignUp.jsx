@@ -1,22 +1,21 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, updateProfile } from 'firebase/auth';
-import { auth } from '../../Firebase/firebase.js';
+import { setDoc, doc } from 'firebase/firestore';
+import { auth, db } from '../../Firebase/firebase';
 import { toast } from 'react-toastify';
 import './SignUp.css';
-import NavBar from '../../Components/NavBar';
 import signupImage from '../../assets/images/Learner.png';
 import googleLogo from '/icons/google-logo.png';
 import websiteLogo from '/icons/website-logo.png';
 
 const SignUp = () => {
   const navigate = useNavigate();
-  const [fullName, setFullName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
 
   // Handle form submission for email/password signup
@@ -24,19 +23,32 @@ const SignUp = () => {
     e.preventDefault();
     setError('');
 
-    if (password !== confirmPassword) {
-      toast.error('Passwords do not match');
-      return;
-    }
-
     try {
+      const fullName = `${firstName} ${lastName}`.trim();
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(userCredential.user, { displayName: fullName });
+      const user = userCredential.user;
+
+      // Update Firebase auth profile
+      await updateProfile(user, { displayName: fullName });
+
+      // Store user data in Firestore
+      await setDoc(doc(db, 'users', user.uid), {
+        firstName,
+        lastName,
+        email,
+        fullName,
+        createdAt: new Date().toISOString(),
+      });
+
       toast.success('Account created successfully!');
-      // navigate('/aitools');
-      console.log(userCredential.user);
+      navigate('/AiTools');
     } catch (error) {
-      toast.error(error.message);
+      const errorMessage = error.code === 'auth/email-already-in-use'
+        ? 'Email is already in use.'
+        : error.code === 'auth/weak-password'
+        ? 'Password should be at least 6 characters.'
+        : error.message;
+      toast.error(errorMessage);
     }
   };
 
@@ -44,9 +56,20 @@ const SignUp = () => {
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
-      toast.success('Signed in with Google!');
-      navigate('/aitools');
+      const userCredential = await signInWithPopup(auth, provider);
+      const user = userCredential.user;
+
+      // Store Google user data in Firestore
+      await setDoc(doc(db, 'users', user.uid), {
+        firstName: user.displayName?.split(' ')[0] || '',
+        lastName: user.displayName?.split(' ').slice(1).join(' ') || '',
+        email: user.email,
+        fullName: user.displayName || '',
+        createdAt: new Date().toISOString(),
+      }, { merge: true }); // Use merge to avoid overwriting existing data
+
+      toast.success('Signed up with Google!');
+      navigate('/AiTools');
     } catch (error) {
       toast.error(error.message);
     }
@@ -54,77 +77,93 @@ const SignUp = () => {
 
   return (
     <>
-      <div className="website-logo" onClick={() => navigate('/')}>
-        <img src={websiteLogo} alt="Website Logo" />
+      <div className="website-logo" onClick={() => navigate('/')} role="button" aria-label="Go to homepage">
+        <img src={websiteLogo} alt="Learn Smart Logo" />
       </div>
       <div className="signup-container">
         <div className="signup-box">
           <h2>Create Account</h2>
           <form className="signup-form" onSubmit={handleSubmit}>
             <div className="input-group">
+              <label htmlFor="firstName" className="sr-only">First Name</label>
               <input
+                id="firstName"
                 type="text"
-                placeholder="Full Name"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
+                placeholder="First Name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
                 required
+                aria-label="First Name"
+                data-testid="firstName-input"
               />
             </div>
             <div className="input-group">
+              <label htmlFor="lastName" className="sr-only">Last Name</label>
               <input
+                id="lastName"
+                type="text"
+                placeholder="Last Name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+                aria-label="Last Name"
+                data-testid="lastName-input"
+              />
+            </div>
+            <div className="input-group">
+              <label htmlFor="email" className="sr-only">Email</label>
+              <input
+                id="email"
                 type="email"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                aria-label="Email"
+                data-testid="email-input"
               />
             </div>
-            <div className="input-group password-field">
+            <div className="input-group">
+              <label htmlFor="password" className="sr-only">Password</label>
               <input
+                id="password"
                 type={showPassword ? 'text' : 'password'}
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                aria-label="Password"
+                data-testid="password-input"
               />
               <span
                 className="toggle-password"
                 onClick={() => setShowPassword(!showPassword)}
                 title={showPassword ? 'Hide password' : 'Show password'}
+                role="button"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                data-testid="toggle-password"
               >
                 {showPassword ? <i class="fa-solid fa-eye-slash"></i> : <i class="fa-solid fa-eye"></i>}
               </span>
             </div>
-            <div className="input-group password-field">
-              <input
-                type={showConfirmPassword ? 'text' : 'password'}
-                placeholder="Confirm Password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-              <span
-                className="toggle-password"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                title={showConfirmPassword ? 'Hide password' : 'Show password'}
-              >
-                {showConfirmPassword ? <i class="fa-solid fa-eye-slash"></i> : <i class="fa-solid fa-eye"></i>}
-              </span>
-            </div>
-            <button type="submit" className="signup-button">
+            <button type="submit" className="signup-button" aria-label="Sign up" data-testid="signup-button">
               Continue
             </button>
-            <div  className="signup-login-text">
-              <p>
-                Already have an account? <Link to="/signin">Sign in</Link>
-              </p>
-            </div>
+            <p className="signup-signin-text">
+              Already have an account? <Link to="/signin" data-testid="signin-link">Sign in</Link>
+            </p>
             <p className="or">
               <span><hr /></span>
               <span>OR</span>
               <span><hr /></span>
             </p>
-            <button type="button" className="google-button" onClick={handleGoogleSignIn}>
+            <button
+              type="button"
+              className="google-button"
+              onClick={handleGoogleSignIn}
+              aria-label="Sign up with Google"
+              data-testid="google-signup-button"
+            >
               <img src={googleLogo} alt="Google Logo" className="google-logo" />
               <span>Continue with Google</span>
             </button>
@@ -135,7 +174,7 @@ const SignUp = () => {
         </div>
       </div>
     </>
-  )
+  );
 };
 
 export default SignUp;

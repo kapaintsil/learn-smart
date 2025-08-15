@@ -1,18 +1,69 @@
+/* === New shell wrapper to control animation state === */
+.sidebar-shell {
+  --sidebar-w: 200px;           /* keep this in sync with .sidebar width */
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 20;
+  pointer-events: none;         /* let children opt in */
+}
+
+/* Keep interactions enabled for the actual UI parts */
+.sidebar-shell .sidebar,
+.sidebar-shell .sidebar-toggle-btn {
+  pointer-events: auto;
+}
+
+/* Your existing sidebar styles (kept) */
 .sidebar {
-  width: 200px;
+  width: var(--sidebar-w);
   height: 100vh;
   background-color: #0f172a;
   color: #f8fafc;
   padding: 30px 20px;
   box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1);
-  position: fixed;
+  position: absolute;           /* was fixed; absolute inside the shell */
   left: 0;
   top: 0;
-  z-index: 10;
   overflow-y: auto;
   margin-top: 70px;
+  transform: translateX(0);
+  opacity: 1;
+  transition: transform 0.3s ease-in-out, opacity 0.2s ease-in-out;
 }
 
+/* Slide out when closed */
+.sidebar-shell.closed .sidebar {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+/* Toggle button that rides along the edge */
+.sidebar-toggle-btn {
+  position: absolute;
+  top: 80px;                    /* sit under your header */
+  left: var(--sidebar-w);       /* align with sidebar edge when open */
+  z-index: 21;
+  background-color: #0f172a;
+  color: #f8fafc;
+  border: none;
+  padding: 8px 10px;
+  cursor: pointer;
+  border-radius: 0 4px 4px 0;
+  transition: left 0.3s ease-in-out, background-color 0.2s ease-in-out;
+}
+
+.sidebar-toggle-btn:hover {
+  background-color: #1e293b;
+}
+
+/* When closed, park the button at the screen edge */
+.sidebar-shell.closed .sidebar-toggle-btn {
+  left: 0;
+}
+
+/* --- keep your existing visual styles --- */
 .sidebar-title {
   font-size: 1.5rem;
   font-weight: bold;
@@ -50,4 +101,10 @@
 .sidebar-tool-name {
   font-size: 16px;
   font-weight: 500;
+}
+
+/* Optional: highlight current tool */
+.sidebar-tool-item.active {
+  background-color: #0b1224;
+  outline: 1px solid #334155;
 }

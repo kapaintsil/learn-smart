@@ -55,7 +55,7 @@ const History = () => {
     }
   };
 
-  // ✅ Navigate to the correct tool based on item.type
+  // Navigate to the correct tool based on item.type
   const openItem = (item) => {
     let toolPath = "";
     switch (item.type) {

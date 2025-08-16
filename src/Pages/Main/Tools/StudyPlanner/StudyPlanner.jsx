@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import { saveToFirestore } from "../../../../utils/saveToFirestore";
 import { downloadPlan } from "../../../../utils/downloadPlan";
 import { handleFileUpload } from "../../../../utils/handleFileUpload";
-import { model } from "../../../../Firebase/firebase";
+import { model, auth } from "../../../../Firebase/firebase";
 import { toast } from "react-toastify";
 import ReactMarkdown from "react-markdown";
 import "./StudyPlanner.css";
@@ -18,27 +18,49 @@ const StudyPlanner = () => {
   const [title, setTitle] = useState("");
   const [plan, setPlan] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  // Monitor auth state
+  useEffect(() => {
+    console.log("StudyPlanner: Initializing auth state listener");
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      console.log("StudyPlanner: Auth state changed, user:", user ? user.uid : null);
+      setIsAuthenticated(!!user);
+    });
+    return () => {
+      console.log("StudyPlanner: Unsubscribing auth listener");
+      unsubscribe();
+    };
+  }, []);
 
   // Load saved data from History.jsx
   useEffect(() => {
     if (state?.savedData) {
+      console.log("StudyPlanner: Loading saved data:", state.savedData);
       const { title, originalContent, generatedPlan, examDate, dailyHours } = state.savedData;
       setTitle(title || "");
       setTextInput(originalContent || "");
       setPlan(generatedPlan || "");
       setExamDate(examDate || "");
       setDailyHours(dailyHours || 2);
-      setUseText(!state.savedData.file); // Assume text input if no file
+      setUseText(!state.savedData.file);
     }
   }, [state]);
 
   const handleGenerate = async () => {
     if (!title.trim()) {
       toast.error("Please enter a plan title.");
+      console.error("StudyPlanner: Validation failed: Missing title");
       return;
     }
-    if ((!useText && !file) || !examDate || !dailyHours) {
-      toast.error("Please fill all required fields.");
+    if (!useText && !file) {
+      toast.error("Please provide text input or upload a file.");
+      console.error("StudyPlanner: Validation failed: Missing content");
+      return;
+    }
+    if (!examDate || !dailyHours) {
+      toast.error("Please fill in exam date and daily hours.");
+      console.error("StudyPlanner: Validation failed: Missing exam date or hours");
       return;
     }
 
@@ -46,7 +68,9 @@ const StudyPlanner = () => {
     setPlan("");
 
     try {
+      console.log("StudyPlanner: Generating plan, user:", auth.currentUser?.uid);
       const studyContent = useText ? textInput : await handleFileUpload(file);
+      console.log("StudyPlanner: Content processed:", studyContent.substring(0, 100) + "...");
 
       const prompt = `Create a detailed daily study plan based on the content below. 
       Today is ${new Date().toDateString()} and the exam date is ${examDate}. 
@@ -58,24 +82,35 @@ const StudyPlanner = () => {
 
       ${studyContent}`;
 
+      console.log("StudyPlanner: Sending prompt to AI");
       const result = await model.generateContent(prompt);
       const response = await result.response;
       const generatedText = await response.text();
+      console.log("StudyPlanner: AI output:", generatedText.substring(0, 200) + "...");
 
       setPlan(generatedText);
 
-      await saveToFirestore("generatedItems", {
+      if (!isAuthenticated || !auth.currentUser) {
+        console.warn("StudyPlanner: No authenticated user, skipping Firestore save");
+        toast.info("Study plan generated but not saved (please sign in).");
+        return;
+      }
+
+      const itemData = {
         type: "study-plan",
         title: title.trim(),
         originalContent: studyContent,
         generatedPlan: generatedText,
         examDate,
         dailyHours,
-      });
+      };
+      console.log("StudyPlanner: Saving to Firestore:", itemData);
 
+      const itemId = await saveToFirestore("generatedItems", itemData);
+      console.log("StudyPlanner: Saved to Firestore with itemId:", itemId);
       toast.success("Study plan generated and saved successfully!");
     } catch (error) {
-      console.error("Error generating study plan:", error);
+      console.error("StudyPlanner: Error generating or saving study plan:", error);
       toast.error("Error generating study plan: " + error.message);
     } finally {
       setLoading(false);
@@ -86,8 +121,10 @@ const StudyPlanner = () => {
     if (plan) {
       downloadPlan(plan, `${title || "study-plan"}.pdf`, title || "Generated Study Plan");
       toast.success("Study plan downloaded as PDF!");
+      console.log("StudyPlanner: Plan downloaded as PDF");
     } else {
       toast.error("No study plan to download.");
+      console.error("StudyPlanner: Download failed: No plan available");
     }
   };
 
@@ -192,13 +229,18 @@ const StudyPlanner = () => {
         </div>
         <button
           onClick={handleGenerate}
-          disabled={loading}
+          disabled={loading || !isAuthenticated}
           className="generate-btn"
           aria-label="Generate Study Plan"
           data-testid="generate-button"
         >
           {loading ? "Generating..." : "Generate Study Plan"}
         </button>
+        {!isAuthenticated && (
+          <p className="auth-warning" data-testid="auth-warning">
+            Please sign in to save your study plan.
+          </p>
+        )}
       </div>
     </div>
   );

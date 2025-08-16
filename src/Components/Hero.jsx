@@ -43,7 +43,7 @@ function Hero() {
         </h1>
         <p className="hero-subtext">
           Learning just got easier! Elevate your academic journey with LearnSmart! 
-          Find your research assistant, code helper, text-to-speech transcribers, 
+          Find your flashcard generator, quiz generator, 
           and other AI tools for you in one location.
         </p>
         <button className="hero-button" onClick={handleGetStarted}>

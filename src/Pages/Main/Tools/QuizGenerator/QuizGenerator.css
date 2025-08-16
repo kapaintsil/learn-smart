@@ -4,6 +4,8 @@
   min-width: 320px;
   max-width: 1000px;
   margin: 3rem auto;
+  margin-bottom: -30px;
+  margin-left: 100px;
   padding: 2rem;
   background: #fff;
   border-radius: 16px;
@@ -80,7 +82,7 @@
 /* Generate Button */
 .generate-btn {
   width: 100%;
-  padding: 1rem;
+  padding: 0.5rem;
   background-color: #0077cc;
   color: white;
   border: none;

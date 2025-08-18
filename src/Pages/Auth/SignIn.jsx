@@ -5,8 +5,8 @@ import { auth } from '../../Firebase/firebase';
 import { toast } from 'react-toastify';
 import './SignIn.css';
 import signinImage from '../../assets/images/Learner.png';
-import googleLogo from '/icons/google-logo.png';
-import websiteLogo from '/icons/website-logo.png';
+import googleLogo from '../../assets/images/google-logo.png';
+import websiteLogo from '../../assets/images/website-logo.png';
 
 const SignIn = () => {
   const navigate = useNavigate();

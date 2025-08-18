@@ -6,8 +6,8 @@ import { auth, db } from '../../Firebase/firebase';
 import { toast } from 'react-toastify';
 import './SignUp.css';
 import signupImage from '../../assets/images/Learner.png';
-import googleLogo from '/icons/google-logo.png';
-import websiteLogo from '/icons/website-logo.png';
+import googleLogo from '../../assets/images/google-logo.png';
+import websiteLogo from '../../assets/images/website-logo.png';
 
 const SignUp = () => {
   const navigate = useNavigate();

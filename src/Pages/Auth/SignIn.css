@@ -17,17 +17,18 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  padding: 24px;
+  padding: 32px;
+  /* background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%); */
   gap: 24px;
 }
 
 /* Signin card */
 .signin-box {
   background-color: #ffffff;
-  padding: 40px;
-  border-radius: 12px;
+  padding: 10px 30px 30px 30px;
+  border-radius: 12px 0 0 12px;
   box-shadow: 0 6px 20px rgba(0, 123, 255, 0.15);
-  max-width: 400px;
+  max-width: 350px;
   width: 100%;
   text-align: center;
 }
@@ -38,6 +39,8 @@
   font-size: 1.875rem;
   font-weight: 700;
   color: #001880;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
 }
 
 /* Form layout */
@@ -55,10 +58,9 @@
 
 /* Input styles */
 .signin-form input {
-  width: 100%;
-  box-sizing: border-box;
+  width: 90%;
   color: gray;
-  padding: 12px 16px;
+  padding: 10px 14px;
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 20px;
@@ -90,9 +92,11 @@
   color: #007bff;
 }
 
+
+
 /* Submit button */
 .signin-button {
-  padding: 12px;
+  padding: 10px;
   background-color: #001880;
   color: #ffffff;
   font-size: 1rem;
@@ -107,23 +111,31 @@
   background-color: #0033a0;
 }
 
+.signin-button:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
 /* Google button */
 .google-button {
+  color: #001880;
+  height: 35px;
+  margin-top: -19px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 12px;
-  color: #001880;
+  justify-content: space-evenly;
   border: 1px solid #001880;
   border-radius: 20px;
   background: white;
-  cursor: pointer;
-  transition: border-color 0.3s ease;
 }
 
 .google-button:hover {
   border-color: #007bff;
+}
+
+.google-button:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
 }
 
 .google-logo {
@@ -137,9 +149,10 @@
   align-items: center;
   justify-content: center;
   gap: 16px;
-  margin: 16px 0;
+  margin: 20px 0;
   color: #6b7280;
   font-size: 0.875rem;
+  font-weight: 500;
 }
 
 .or hr {
@@ -150,84 +163,70 @@
 
 /* Signup link text */
 .signin-signup-text {
+  margin-top: 100px;
+  color: #001880;
+  margin-top: -10px;
+  font-size: 0.85rem;
   color: #555;
-  font-size: 0.9rem;
 }
 
 .signin-signup-text a {
   color: #007bff;
   text-decoration: none;
-  font-weight: 500;
 }
 
 .signin-signup-text a:hover {
+  color: #005bb5;
   text-decoration: underline;
 }
 
-/* Signin image */
+/* Signin image
 .signin-image-container {
-  flex: 1;
-  max-width: 500px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+  max-width: 420px;
+  width: 100%;
+} */
 
 .signin-image {
-  max-width: 100%;
-  height: auto;
-  border-radius: 20px;
+  height: 438px;
+  width: 350px;
+  margin: 10px 0 0 -40px;
+  display: block;
+  border-radius: 0 40px 40px 0;
 }
 
 /* Responsive design */
-@media screen and (max-width: 1024px) {
+@media screen and (max-width: 768px) {
   .signin-container {
     flex-direction: column;
-    gap: 32px;
-  }
-
-  .signin-box {
-    max-width: 480px;
+    justify-content: flex-start;
+    padding-top: 120px;
   }
 
   .signin-image-container {
+    display: none;
+  }
+
+  .signin-box {
+    border-radius: 12px;
     max-width: 400px;
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.15);
   }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 480px) {
   .website-logo {
     top: 16px;
     left: 16px;
   }
 
   .website-logo img {
-    width: 150px;
-  }
-
-  .signin-box {
-    padding: 32px;
-    box-shadow: none;
-    border-radius: 0;
-    background: transparent;
-  }
-
-  .signin-image-container {
-    display: none;
-  }
-}
-
-@media screen and (max-width: 480px) {
-  .signin-container {
-    padding: 16px;
+    width: 130px;
   }
 
   .signin-box {
     padding: 24px;
-  }
-
-  .signin-box h2 {
-    font-size: 1.625rem;
+    border: none;
+    box-shadow: none;
   }
 
   .signin-form input,
@@ -235,5 +234,9 @@
   .google-button {
     font-size: 0.9375rem;
     padding: 14px 16px;
+  }
+
+  .signin-box h2 {
+    font-size: 1.5rem;
   }
 }

@@ -1,14 +1,9 @@
-import BrainIcon from '../assets/ai-tool-icons/Brain.png';
-import CdIcon from '../assets/ai-tool-icons/Cd.png';
-import SmartQIcon from '../assets/ai-tool-icons/smartQ.png';
-import ChatmateIcon from '../assets/ai-tool-icons/chatmate.png';
-import GroupIcon from '../assets/ai-tool-icons/Group.png';
-
-const aiTools = [
+const aiTools =[
+  
   {
     "id": "study-planner",
     "name": "Study Planner",
-    "icon": BrainIcon,
+    "icon": "/aiTools/Brain.png",
     "description": "Creates personalized study schedules based on exam dates or learning goals.",
     "features": [
       "Custom study timetables",
@@ -21,7 +16,7 @@ const aiTools = [
   {
     "id": "flashcard-generator",
     "name": "Flashcard Generator",
-    "icon": CdIcon,
+    "icon": "/aiTools/Cd.png",
     "description": "Automatically creates flashcards from documents or pasted text.",
     "features": [
       "Question-answer format",
@@ -34,7 +29,7 @@ const aiTools = [
   {
     "id": "quiz-generator",
     "name": "Quiz Generator",
-    "icon": SmartQIcon,
+    "icon": "/aiTools/smartQ.png",
     "description": "Generates multiple-choice or true/false quizzes from text or file input.",
     "features": [
       "MCQ/True-False format",
@@ -47,7 +42,7 @@ const aiTools = [
   {
     "id": "concept-explainer",
     "name": "Concept Explainer",
-    "icon": ChatmateIcon,
+    "icon": "/aiTools/chatmate.png",
     "description": "Explains difficult academic concepts using analogies, steps, and examples.",
     "features": [
       "Simplifies tough concepts using analogies",
@@ -61,7 +56,7 @@ const aiTools = [
   {
     "id": "history",
     "name": "History",
-    "icon": GroupIcon,
+    "icon": "/aiTools/Group.png",
     "description": "Smart note organizer that auto-tags topics and summarizes key points.",
     "features": [
       "Extracts key ideas from notes",

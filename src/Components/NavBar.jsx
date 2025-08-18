@@ -4,7 +4,7 @@ import { auth } from '../Firebase/firebase.js';
 import { signOut } from 'firebase/auth';
 import { toast } from 'react-toastify';
 import './NavBar.css';
-import logo from '../assets/images/website-logo.png';
+import logo from '/icons/website-logo.png';
 
 const NavBar = () => {
   const navigate = useNavigate();

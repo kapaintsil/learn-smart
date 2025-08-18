@@ -1,15 +1,15 @@
 /* === New shell wrapper to control animation state === */
 .sidebar-shell {
-  --sidebar-w: 200px;           /* keep this in sync with .sidebar width */
+  --sidebar-w: 200px;           
   position: fixed;
   top: 0;
   left: 0;
   height: 100vh;
   z-index: 20;
-  pointer-events: none;         /* let children opt in */
+  pointer-events: none;         
 }
 
-/* Keep interactions enabled for the actual UI parts */
+
 .sidebar-shell .sidebar,
 .sidebar-shell .sidebar-toggle-btn {
   pointer-events: auto;
@@ -23,7 +23,7 @@
   color: #f8fafc;
   padding: 30px 20px;
   box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1);
-  position: absolute;           /* was fixed; absolute inside the shell */
+  position: absolute;           
   left: 0;
   top: 0;
   overflow-y: auto;
@@ -42,8 +42,8 @@
 /* Toggle button that rides along the edge */
 .sidebar-toggle-btn {
   position: absolute;
-  top: 80px;                    /* sit under your header */
-  left: var(--sidebar-w);       /* align with sidebar edge when open */
+  top: 80px;                    
+  left: var(--sidebar-w);       
   z-index: 21;
   background-color: #0f172a;
   color: #f8fafc;
@@ -107,4 +107,11 @@
 .sidebar-tool-item.active {
   background-color: #0b1224;
   outline: 1px solid #334155;
+}
+
+
+@media screen and (max-width: 768px) {
+  .sidebar {
+    margin-top: 30px;
+  }
 }

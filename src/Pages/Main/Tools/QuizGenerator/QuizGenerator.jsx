@@ -3,14 +3,14 @@ import { useLocation } from "react-router-dom";
 import { handleFileUpload } from "../../../../utils/handleFileUpload";
 import { downloadPlan } from "../../../../utils/downloadPlan";
 import { saveToFirestore } from "../../../../utils/saveToFirestore";
-import { addQuiz } from "../../../../utils/localStorage"; // ✅ Local storage import
+import { addQuiz } from "../../../../utils/localStorage";
 import { auth, model } from "../../../../Firebase/firebase";
+import { toast } from "react-toastify";
 import "./QuizGenerator.css";
 import ReactMarkdown from "react-markdown";
 
 function QuizGenerator() {
-  const location = useLocation();
-
+  const { state } = useLocation();
   const [file, setFile] = useState(null);
   const [textInput, setTextInput] = useState("");
   const [useText, setUseText] = useState(false);
@@ -19,27 +19,46 @@ function QuizGenerator() {
   const [format, setFormat] = useState("mcq");
   const [quiz, setQuiz] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // ✅ Load saved quiz if opened from History
+  // Monitor auth state
   useEffect(() => {
-    if (location.state?.savedData) {
-      const saved = location.state.savedData;
-      setQuiz(saved.quiz || "");
-      setTextInput(saved.content || "");
-      setQuestionCount(saved.questionCount || 5);
-      setDifficulty(saved.difficulty || "medium");
-      setFormat(saved.format || "mcq");
-      setUseText(true);
+    console.log("QuizGenerator: Initializing auth state listener");
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      console.log("QuizGenerator: Auth state changed, user:", user ? user.uid : null);
+      setIsAuthenticated(!!user);
+    });
+    return () => {
+      console.log("QuizGenerator: Unsubscribing auth listener");
+      unsubscribe();
+    };
+  }, []);
+
+  // Load saved quiz from History
+  useEffect(() => {
+    if (state?.savedData) {
+      console.log("QuizGenerator: Loading savedData:", state.savedData);
+      const { title, content, quiz, questionCount, difficulty, format } = state.savedData;
+      setQuiz(quiz || "");
+      setTextInput(content || "");
+      setQuestionCount(questionCount || 5);
+      setDifficulty(difficulty || "medium");
+      setFormat(format || "mcq");
+      setUseText(!!content);
+    } else {
+      console.log("QuizGenerator: No savedData provided");
     }
-  }, [location]);
+  }, [state]);
 
   const handleGenerateQuiz = async () => {
     if (!useText && !file) {
-      alert("Please upload a file.");
+      toast.error("Please upload a file.");
+      console.error("QuizGenerator: Validation failed: No file uploaded");
       return;
     }
     if (useText && !textInput.trim()) {
-      alert("Please enter text.");
+      toast.error("Please enter text.");
+      console.error("QuizGenerator: Validation failed: Empty text input");
       return;
     }
 
@@ -48,41 +67,61 @@ function QuizGenerator() {
 
     try {
       const content = useText ? textInput : await handleFileUpload(file);
+      console.log("QuizGenerator: Content processed:", content.substring(0, 100) + "...");
 
       const prompt = `Generate a ${questionCount}-question ${
         format === "tf" ? "true/false" : "multiple-choice"
       } quiz with answers and explanations. Difficulty: ${difficulty}.\n\n${content}`;
 
+      console.log("QuizGenerator: Sending prompt to AI");
       const result = await model.generateContent(prompt);
       const response = await result.response;
       const text = await response.text();
+      console.log("QuizGenerator: AI output:", text.substring(0, 200) + "...");
 
       setQuiz(text);
 
-      // ✅ Save to Firestore
-      await saveToFirestore(`users/${auth.currentUser.uid}/generatedItems`, {
-        title: `Quiz (${difficulty}) - ${new Date().toLocaleDateString()}`,
+      if (!isAuthenticated || !auth.currentUser) {
+        console.warn("QuizGenerator: No authenticated user, skipping Firestore save");
+        toast.info("Quiz generated but not saved (please sign in).");
+        // Save to local storage only
+        addQuiz({
+          title: `Quiz (${difficulty}) - ${new Date().toLocaleDateString()}`,
+          type: "quiz",
+          content,
+          quiz: text,
+          questionCount,
+          difficulty,
+          format,
+        });
+        setLoading(false);
+        return;
+      }
+
+      const itemData = {
         type: "quiz",
+        title: `Quiz (${difficulty}) - ${new Date().toLocaleDateString()}`,
         content,
         quiz: text,
         questionCount,
         difficulty,
         format,
-      });
+      };
+      console.log("QuizGenerator: Saving to Firestore:", JSON.stringify(itemData, null, 2));
+      const itemId = await saveToFirestore("generatedItems", itemData);
+      if (!itemId) {
+        console.error("QuizGenerator: Save failed, no itemId returned");
+        toast.error("Failed to save quiz.");
+      } else {
+        console.log("QuizGenerator: Saved to Firestore with itemId:", itemId);
+        toast.success("Quiz saved successfully!");
+      }
 
-      // ✅ Save to Local Storage
-      addQuiz({
-        title: `Quiz (${difficulty}) - ${new Date().toLocaleDateString()}`,
-        type: "quiz",
-        content,
-        quiz: text,
-        questionCount,
-        difficulty,
-        format,
-      });
-
+      // Save to local storage
+      addQuiz(itemData);
     } catch (error) {
-      console.error("Quiz generation error:", error);
+      console.error("QuizGenerator: Error generating or saving quiz:", error);
+      toast.error("Error generating quiz: " + error.message);
       setQuiz("Error generating quiz: " + error.message);
     } finally {
       setLoading(false);
@@ -97,6 +136,9 @@ function QuizGenerator() {
 
   return (
     <div className="quiz-container">
+      <header className="study-planner-header">
+        <h2>Quiz Generator</h2>
+      </header>
       {quiz && (
         <div className="quiz-output">
           <pre>
@@ -114,6 +156,7 @@ function QuizGenerator() {
           placeholder="Paste or type your content here..."
           value={textInput}
           onChange={(e) => setTextInput(e.target.value)}
+          data-testid="text-input"
         />
       ) : (
         <input
@@ -121,19 +164,15 @@ function QuizGenerator() {
           className="file-input"
           onChange={(e) => setFile(e.target.files[0])}
           accept=".pdf,.docx,.pptx,.txt,.csv,.xlsx"
+          data-testid="file-input"
         />
       )}
 
       <div className="controls">
-        <label>
+        <label className="toggle">
           Use Text Input
-          <input
-            type="checkbox"
-            checked={useText}
-            onChange={() => setUseText(!useText)}
-          />
+          <input type="checkbox" checked={useText} onChange={() => setUseText(!useText)} data-testid="use-text-toggle" />
         </label>
-
         <label>
           Number of Questions:
           <input
@@ -141,6 +180,7 @@ function QuizGenerator() {
             value={questionCount}
             onChange={(e) => setQuestionCount(Number(e.target.value))}
             min={1}
+            data-testid="question-count-input"
           />
         </label>
 
@@ -149,6 +189,7 @@ function QuizGenerator() {
           <select
             value={difficulty}
             onChange={(e) => setDifficulty(e.target.value)}
+            data-testid="difficulty-select"
           >
             <option value="easy">Easy</option>
             <option value="medium">Medium</option>
@@ -158,7 +199,7 @@ function QuizGenerator() {
 
         <label>
           Format:
-          <select value={format} onChange={(e) => setFormat(e.target.value)}>
+          <select value={format} onChange={(e) => setFormat(e.target.value)} data-testid="format-select">
             <option value="mcq">Multiple Choice</option>
             <option value="tf">True / False</option>
           </select>
@@ -168,6 +209,7 @@ function QuizGenerator() {
           className="generate-btn"
           onClick={handleGenerateQuiz}
           disabled={loading}
+          data-testid="generate-button"
         >
           {loading ? "Generating..." : "Generate"}
         </button>

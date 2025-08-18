@@ -235,6 +235,17 @@
 }
 
 @media screen and (max-width: 480px) {
+
+  .signin-container {
+    position: fixed;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    top: 0;
+    width: 90%;
+    height: 100%;
+  }
+
   .website-logo {
     top: 16px;
     left: 16px;

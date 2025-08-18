@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { saveToFirestore } from "../../../../utils/saveToFirestore";
-import { downloadPlan } from "../../../../utils/downloadPlan";
 import { handleFileUpload } from "../../../../utils/handleFileUpload";
+import { downloadPlan } from "../../../../utils/downloadPlan";
 import { model, auth } from "../../../../Firebase/firebase";
 import { toast } from "react-toastify";
 import ReactMarkdown from "react-markdown";
@@ -13,85 +13,57 @@ const StudyPlanner = () => {
   const [textInput, setTextInput] = useState("");
   const [file, setFile] = useState(null);
   const [useText, setUseText] = useState(true);
-  const [examDate, setExamDate] = useState("");
-  const [dailyHours, setDailyHours] = useState(2);
   const [title, setTitle] = useState("");
+  const [examDate, setExamDate] = useState("");
+  const [dailyHours, setDailyHours] = useState();
   const [plan, setPlan] = useState("");
   const [loading, setLoading] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Monitor auth state
+  // Monitor authentication state
   useEffect(() => {
-    console.log("StudyPlanner: Initializing auth state listener");
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      console.log("StudyPlanner: Auth state changed, user:", user ? user.uid : null);
-      setIsAuthenticated(!!user);
-    });
-    return () => {
-      console.log("StudyPlanner: Unsubscribing auth listener");
-      unsubscribe();
-    };
+    const unsubscribe = auth.onAuthStateChanged(user => setIsAuthenticated(!!user));
+    return () => unsubscribe();
   }, []);
 
-  // Load saved data from History.jsx
+  // Load saved data if navigated from History
   useEffect(() => {
     if (state?.savedData) {
-      console.log("StudyPlanner: Loading saved data:", state.savedData);
-      const { title, originalContent, generatedPlan, examDate, dailyHours } = state.savedData;
+      const { title, originalContent, generatedPlan, examDate, dailyHours, file } = state.savedData;
       setTitle(title || "");
       setTextInput(originalContent || "");
       setPlan(generatedPlan || "");
       setExamDate(examDate || "");
       setDailyHours(dailyHours || 2);
-      setUseText(!state.savedData.file);
+      setUseText(!file);
     }
   }, [state]);
 
   const handleGenerate = async () => {
-    if (!title.trim()) {
-      toast.error("Please enter a plan title.");
-      console.error("StudyPlanner: Validation failed: Missing title");
-      return;
-    }
-    if (!useText && !file) {
-      toast.error("Please provide text input or upload a file.");
-      console.error("StudyPlanner: Validation failed: Missing content");
-      return;
-    }
-    if (!examDate || !dailyHours) {
-      toast.error("Please fill in exam date and daily hours.");
-      console.error("StudyPlanner: Validation failed: Missing exam date or hours");
-      return;
-    }
+    if (!title.trim()) return toast.error("Please enter a plan title.");
+    if (!useText && !file) return toast.error("Please provide text input or upload a file.");
+    if (!examDate || !dailyHours) return toast.error("Please fill in exam date and daily hours.");
 
     setLoading(true);
     setPlan("");
 
     try {
-      console.log("StudyPlanner: Generating plan, user:", auth.currentUser?.uid);
       const studyContent = useText ? textInput : await handleFileUpload(file);
-      console.log("StudyPlanner: Content processed:", studyContent.substring(0, 100) + "...");
 
-      const prompt = `Create a detailed daily study plan based on the content below. 
-      Today is ${new Date().toDateString()} and the exam date is ${examDate}. 
-      The user has ${dailyHours} hours available per day for study. 
-      Divide the content efficiently across the days. 
-      Format output as:
+      const prompt = `Create a detailed daily study plan based on the content below.
+Today is ${new Date().toDateString()} and the exam date is ${examDate}.
+The user has ${dailyHours} hours available per day. Divide content efficiently across days.
+Format output as:
 
-      [Day X] <Topics to study>
+[Day X] <Topics to study>
 
-      ${studyContent}`;
+${studyContent}`;
 
-      console.log("StudyPlanner: Sending prompt to AI");
       const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const generatedText = await response.text();
-      console.log("StudyPlanner: AI output:", generatedText.substring(0, 200) + "...");
-
+      const generatedText = await (await result.response).text();
       setPlan(generatedText);
 
       if (!isAuthenticated || !auth.currentUser) {
-        console.warn("StudyPlanner: No authenticated user, skipping Firestore save");
         toast.info("Study plan generated but not saved (please sign in).");
         return;
       }
@@ -104,13 +76,9 @@ const StudyPlanner = () => {
         examDate,
         dailyHours,
       };
-      console.log("StudyPlanner: Saving to Firestore:", itemData);
-
-      const itemId = await saveToFirestore("generatedItems", itemData);
-      console.log("StudyPlanner: Saved to Firestore with itemId:", itemId);
+      await saveToFirestore("generatedItems", itemData);
       toast.success("Study plan generated and saved successfully!");
     } catch (error) {
-      console.error("StudyPlanner: Error generating or saving study plan:", error);
       toast.error("Error generating study plan: " + error.message);
     } finally {
       setLoading(false);
@@ -118,130 +86,74 @@ const StudyPlanner = () => {
   };
 
   const handleDownload = () => {
-    if (plan) {
-      downloadPlan(plan, `${title || "study-plan"}.pdf`, title || "Generated Study Plan");
-      toast.success("Study plan downloaded as PDF!");
-      console.log("StudyPlanner: Plan downloaded as PDF");
-    } else {
-      toast.error("No study plan to download.");
-      console.error("StudyPlanner: Download failed: No plan available");
-    }
+    if (!plan) return toast.error("No study plan to download.");
+    downloadPlan(plan, `${title || "study-plan"}.pdf`, title || "Generated Study Plan");
+    toast.success("Study plan downloaded as PDF!");
   };
 
   return (
     <div className="study-planner">
-      <div className="study-planner-header">
+      <header className="study-planner-header">
         <h2>Generate Study Plan</h2>
-      </div>
+      </header>
+
       {plan && (
-        <div className="study-plan-output">
-          <h2>Your Study Plan</h2>
+        <section className="study-plan-output">
+          <h2>Study Plan Generator</h2>
           <div className="markdown-output">
             <ReactMarkdown>{plan}</ReactMarkdown>
           </div>
-          <button
-            onClick={handleDownload}
-            className="download-btn"
-            aria-label="Download Study Plan as PDF"
-            data-testid="download-button"
-          >
+          <button onClick={handleDownload} className="download-btn" aria-label="Download Study Plan as PDF">
             Download as PDF
           </button>
-        </div>
+        </section>
       )}
-      <div className="study-planner-form">
-        <div className="input-group">
-          <label htmlFor="title" className="sr-only">Plan Title</label>
-          <input
-            id="title"
-            type="text"
-            placeholder="Enter study plan title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            aria-label="Plan Title"
-            data-testid="title-input"
-          />
-        </div>
+      <section className="study-planner-form">
         {useText ? (
-          <div className="input-group">
-            <label htmlFor="textInput" className="sr-only">Text Input</label>
-            <textarea
-              id="textInput"
-              className="text-area"
-              value={textInput}
-              onChange={(e) => setTextInput(e.target.value)}
-              placeholder="Paste or type content here..."
-              aria-label="Text Input"
-              data-testid="text-input"
-            />
-          </div>
+          <textarea
+            className="text-area"
+            value={textInput}
+            onChange={e => setTextInput(e.target.value)}
+            placeholder="Paste or type content here..."
+          />
         ) : (
-          <div className="input-group">
-            <label htmlFor="fileInput" className="sr-only">File Upload</label>
-            <input
-              id="fileInput"
-              type="file"
-              className="file-input"
-              onChange={(e) => setFile(e.target.files[0])}
-              accept=".pdf,.docx,.txt,.csv,.xlsx"
-              aria-label="File Upload"
-              data-testid="file-input"
-            />
-          </div>
+          <input
+            type="file"
+            className="file-input"
+            onChange={e => setFile(e.target.files[0])}
+            accept=".pdf,.docx,.txt,.csv,.xlsx"
+          />
         )}
+
         <div className="controls">
+          <input
+            type="text"
+            placeholder="Enter title"
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+          />
           <label className="toggle">
             Use Text Input
-            <input
-              type="checkbox"
-              checked={useText}
-              onChange={() => setUseText(!useText)}
-              aria-label="Use Text Input"
-              data-testid="use-text-checkbox"
-            />
+            <input type="checkbox" checked={useText} onChange={() => setUseText(!useText)} />
           </label>
-          <div className="input-group">
-            <label htmlFor="examDate" className="sr-only">Exam Date</label>
+          <label htmlFor="examDate">
+            Exam Date
+            <input type="date" value={examDate} onChange={e => setExamDate(e.target.value)} />
+          </label>
+          <label htmlFor="dailyHours">
+            Daily Study Hours
             <input
-              id="examDate"
-              type="date"
-              value={examDate}
-              onChange={(e) => setExamDate(e.target.value)}
-              required
-              aria-label="Exam Date"
-              data-testid="exam-date-input"
-            />
-          </div>
-          <div className="input-group">
-            <label htmlFor="dailyHours" className="sr-only">Study Hours Per Day</label>
-            <input
-              id="dailyHours"
               type="number"
               value={dailyHours}
               min="1"
-              onChange={(e) => setDailyHours(Number(e.target.value))}
-              required
-              aria-label="Study Hours Per Day"
-              data-testid="daily-hours-input"
+              onChange={e => setDailyHours(Number(e.target.value))}
             />
-          </div>
+          </label>
+          <button onClick={handleGenerate} disabled={loading || !isAuthenticated} className="generate-btn">
+            {loading ? "Generating..." : "Generate"}
+          </button>
         </div>
-        <button
-          onClick={handleGenerate}
-          disabled={loading || !isAuthenticated}
-          className="generate-btn"
-          aria-label="Generate Study Plan"
-          data-testid="generate-button"
-        >
-          {loading ? "Generating..." : "Generate Study Plan"}
-        </button>
-        {!isAuthenticated && (
-          <p className="auth-warning" data-testid="auth-warning">
-            Please sign in to save your study plan.
-          </p>
-        )}
-      </div>
+      </section>
     </div>
   );
 };

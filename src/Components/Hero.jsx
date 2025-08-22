@@ -1,30 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import './Hero.css';
-import heroImage from '../assets/images/hero-image.png';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../Firebase/firebase';
+import { useAuth } from '../contexts/AuthContext';
+import heroImage from '../assets/images/hero-image.png';
 
 function Hero() {
   const navigate = useNavigate();
-  const [userLoggedIn, setUserLoggedIn] = useState(false);
+  const { user } = useAuth();
 
   const headline = [
-    { text: 'a centralized', className: 'span-1' },
-    { text: 'ai - powered', className: 'span-2' },
-    { text: 'platform for', className: 'span-1' },
-    { text: 'smarter learning', className: 'span-2' }
+    { text: 'A centralized', className: 'text-gray-600 dark:text-gray-400' },
+    {
+      text: 'AI - powered',
+      className: 'text-primary-600 dark:text-primary-400 font-semibold',
+    },
+    { text: 'platform for', className: 'text-gray-600 dark:text-gray-400' },
+    {
+      text: 'smarter learning',
+      className: 'text-primary-600 dark:text-primary-400 font-semibold',
+    },
   ];
 
-  // Listen for auth state changes
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setUserLoggedIn(!!user);
-    });
-    return () => unsubscribe();
-  }, []);
-
   const handleGetStarted = () => {
-    if (userLoggedIn) {
+    if (user) {
       navigate('/aitools');
     } else {
       navigate('/signup');
@@ -32,27 +29,40 @@ function Hero() {
   };
 
   return (
-    <section className="hero">
-      <div className="hero-left">
-        <h1 className="hero-heading">
-          {headline.map((part, index) => (
-            <span key={index} className={part.className}>
-              {part.text}{' '}
-            </span>
-          ))}
-        </h1>
-        <p className="hero-subtext">
-          Learning just got easier! Elevate your academic journey with LearnSmart! 
-          Find your flashcard generator, quiz generator, 
-          and other AI tools for you in one location.
-        </p>
-        <button className="hero-button" onClick={handleGetStarted}>
-          {userLoggedIn ? 'Go to Tools' : 'Get Started'}
-        </button>
-      </div>
+    <section className='min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800'>
+      <div className='max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center'>
+        {/* Left side - Content */}
+        <div className='space-y-8'>
+          <h1 className='text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight'>
+            {headline.map((part, index) => (
+              <span key={index} className={part.className}>
+                {part.text}{' '}
+              </span>
+            ))}
+          </h1>
 
-      <div className="hero-right">
-        <img src={heroImage} alt="Learning illustration" className="hero-image" />
+          <p className='text-lg sm:text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-2xl'>
+            Learning just got easier! Elevate your academic journey with
+            LearnSmart! Find your flashcard generator, quiz generator, and other
+            AI tools for you in one location.
+          </p>
+
+          <button
+            onClick={handleGetStarted}
+            className='btn btn-primary text-lg px-8 py-4 hover:scale-105 transition-transform'
+          >
+            {user ? 'Go to Tools' : 'Get Started'}
+          </button>
+        </div>
+
+        {/* Right side - Image */}
+        <div className='flex justify-center lg:justify-end'>
+          <img
+            src={heroImage}
+            alt='Learning illustration'
+            className='w-full max-w-lg h-auto object-contain drop-shadow-2xl'
+          />
+        </div>
       </div>
     </section>
   );

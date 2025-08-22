@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, updateProfile } from 'firebase/auth';
+import {
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  updateProfile,
+} from 'firebase/auth';
 import { setDoc, doc } from 'firebase/firestore';
 import { auth, db } from '../../Firebase/firebase';
 import { toast } from 'react-toastify';
-import './SignUp.css';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 import signupImage from '../../assets/images/Learner.png';
 import googleLogo from '/icons/google-logo.png';
 import websiteLogo from '/icons/website-logo.png';
@@ -19,13 +24,17 @@ const SignUp = () => {
   const [error, setError] = useState('');
 
   // Handle form submission for email/password signup
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     setError('');
 
     try {
       const fullName = `${firstName} ${lastName}`.trim();
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
 
       // Update Firebase auth profile
@@ -41,13 +50,14 @@ const SignUp = () => {
       });
 
       toast.success('Account created successfully!');
-      navigate('/AiTools');
+      navigate('/aitools');
     } catch (error) {
-      const errorMessage = error.code === 'auth/email-already-in-use'
-        ? 'Email is already in use.'
-        : error.code === 'auth/weak-password'
-        ? 'Password should be at least 6 characters.'
-        : error.message;
+      const errorMessage =
+        error.code === 'auth/email-already-in-use'
+          ? 'Email is already in use.'
+          : error.code === 'auth/weak-password'
+          ? 'Password should be at least 6 characters.'
+          : error.message;
       toast.error(errorMessage);
     }
   };
@@ -60,120 +70,156 @@ const SignUp = () => {
       const user = userCredential.user;
 
       // Store Google user data in Firestore
-      await setDoc(doc(db, 'users', user.uid), {
-        firstName: user.displayName?.split(' ')[0] || '',
-        lastName: user.displayName?.split(' ').slice(1).join(' ') || '',
-        email: user.email,
-        fullName: user.displayName || '',
-        createdAt: new Date().toISOString(),
-      }, { merge: true }); // Use merge to avoid overwriting existing data
+      await setDoc(
+        doc(db, 'users', user.uid),
+        {
+          firstName: user.displayName?.split(' ')[0] || '',
+          lastName: user.displayName?.split(' ').slice(1).join(' ') || '',
+          email: user.email,
+          fullName: user.displayName || '',
+          createdAt: new Date().toISOString(),
+        },
+        { merge: true }
+      ); // Use merge to avoid overwriting existing data
 
       toast.success('Signed up with Google!');
-      navigate('/AiTools');
+      navigate('/aitools');
     } catch (error) {
       toast.error(error.message);
     }
   };
 
   return (
-    <>
-      <div className="website-logo" onClick={() => navigate('/')} role="button" aria-label="Go to homepage">
-        <img src={websiteLogo} alt="Learn Smart Logo" />
+    <div className='min-h-screen bg-gray-50 dark:bg-gray-900 flex flex-col'>
+      {/* Logo */}
+      <div className='p-6'>
+        <img
+          src={websiteLogo}
+          alt='Learn Smart Logo'
+          onClick={() => navigate('/')}
+          className='h-8 w-auto cursor-pointer hover:opacity-80 transition-opacity'
+        />
       </div>
-      <div className="signup-container">
-        <div className="signup-box">
-          <h2>Create Account</h2>
-          <form className="signup-form" onSubmit={handleSubmit}>
-            <div className="input-group">
-              <label htmlFor="firstName" className="sr-only">First Name</label>
-              <input
-                id="firstName"
-                type="text"
-                placeholder="First Name"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                required
-                aria-label="First Name"
-                data-testid="firstName-input"
-              />
-            </div>
-            <div className="input-group">
-              <label htmlFor="lastName" className="sr-only">Last Name</label>
-              <input
-                id="lastName"
-                type="text"
-                placeholder="Last Name"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                required
-                aria-label="Last Name"
-                data-testid="lastName-input"
-              />
-            </div>
-            <div className="input-group">
-              <label htmlFor="email" className="sr-only">Email</label>
-              <input
-                id="email"
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                aria-label="Email"
-                data-testid="email-input"
-              />
-            </div>
-            <div className="input-group">
-              <label htmlFor="password" className="sr-only">Password</label>
-              <input
-                id="password"
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                aria-label="Password"
-                data-testid="password-input"
-              />
-              <span
-                className="toggle-password"
-                onClick={() => setShowPassword(!showPassword)}
-                title={showPassword ? 'Hide password' : 'Show password'}
-                role="button"
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
-                data-testid="toggle-password"
+
+      {/* Main content */}
+      <div className='flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8'>
+        <div className='max-w-6xl w-full grid lg:grid-cols-2 gap-8 items-center'>
+          {/* Form */}
+          <div className='card p-6 sm:p-8 max-w-md mx-auto w-full'>
+            <h2 className='text-3xl font-bold text-gray-900 dark:text-white mb-6 text-center'>
+              Create Account
+            </h2>
+
+            <form onSubmit={handleSubmit} className='space-y-5'>
+              <div className='grid grid-cols-2 gap-3'>
+                <div>
+                  <input
+                    type='text'
+                    placeholder='First Name'
+                    value={firstName}
+                    onChange={e => setFirstName(e.target.value)}
+                    required
+                    className='input'
+                    aria-label='First Name'
+                  />
+                </div>
+                <div>
+                  <input
+                    type='text'
+                    placeholder='Last Name'
+                    value={lastName}
+                    onChange={e => setLastName(e.target.value)}
+                    required
+                    className='input'
+                    aria-label='Last Name'
+                  />
+                </div>
+              </div>
+
+              <div>
+                <input
+                  type='email'
+                  placeholder='Email'
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  required
+                  className='input'
+                  aria-label='Email address'
+                />
+              </div>
+
+              <div className='relative'>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder='Password'
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
+                  className='input pr-12'
+                  aria-label='Password'
+                />
+                <button
+                  type='button'
+                  onClick={() => setShowPassword(!showPassword)}
+                  className='absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? (
+                    <FiEyeOff className='w-5 h-5' />
+                  ) : (
+                    <FiEye className='w-5 h-5' />
+                  )}
+                </button>
+              </div>
+
+              <button type='submit' className='btn btn-primary w-full'>
+                Create Account
+              </button>
+
+              <p className='text-center text-gray-600 dark:text-gray-400 text-sm'>
+                Already have an account?{' '}
+                <Link
+                  to='/signin'
+                  className='text-primary-600 dark:text-primary-400 hover:underline'
+                >
+                  Sign in
+                </Link>
+              </p>
+
+              <div className='relative'>
+                <div className='absolute inset-0 flex items-center'>
+                  <div className='w-full border-t border-gray-300 dark:border-gray-600' />
+                </div>
+                <div className='relative flex justify-center text-sm'>
+                  <span className='px-2 bg-white dark:bg-gray-800 text-gray-500'>
+                    OR
+                  </span>
+                </div>
+              </div>
+
+              <button
+                type='button'
+                onClick={handleGoogleSignIn}
+                className='w-full flex items-center justify-center space-x-3 px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors'
+                aria-label='Sign up with Google'
               >
-                {showPassword ? <i class="fa-solid fa-eye-slash"></i> : <i class="fa-solid fa-eye"></i>}
-              </span>
-            </div>
-            <button type="submit" className="signup-button" aria-label="Sign up" data-testid="signup-button">
-              Continue
-            </button>
-            <p className="signup-signin-text">
-              Already have an account? <Link to="/signin" data-testid="signin-link">Sign in</Link>
-            </p>
-            <p className="or">
-              <span><hr /></span>
-              <span>OR</span>
-              <span><hr /></span>
-            </p>
-            <button
-              type="button"
-              className="google-button"
-              onClick={handleGoogleSignIn}
-              aria-label="Sign up with Google"
-              data-testid="google-signup-button"
-            >
-              <img src={googleLogo} alt="Google Logo" className="google-logo" />
-              <span>Continue with Google</span>
-            </button>
-          </form>
-        </div>
-        <div className="signup-image-container">
-          <img src={signupImage} alt="Sign up illustration" className="signup-image" draggable={false} />
+                <img src={googleLogo} alt='Google Logo' className='w-5 h-5' />
+                <span>Continue with Google</span>
+              </button>
+            </form>
+          </div>
+
+          {/* Image */}
+          <div className='hidden lg:flex justify-center -ml-4'>
+            <img
+              src={signupImage}
+              alt='Sign up illustration'
+              className='max-w-md w-full h-auto object-contain'
+            />
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

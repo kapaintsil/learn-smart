@@ -61,9 +61,9 @@ const SignIn = () => {
 
       {/* Main content */}
       <div className='flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8'>
-        <div className='max-w-6xl w-full grid lg:grid-cols-2 gap-12 items-center'>
+        <div className='max-w-4xl w-full grid lg:grid-cols-2 gap-0 items-stretch rounded-xl shadow-lg overflow-hidden bg-white dark:bg-gray-800'>
           {/* Form */}
-          <div className='card p-8 sm:p-12 max-w-md mx-auto w-full'>
+          <div className='p-8 sm:p-12 w-full flex flex-col justify-center'>
             <h2 className='text-3xl font-bold text-gray-900 dark:text-white mb-8 text-center'>
               Welcome Back
             </h2>
@@ -143,11 +143,11 @@ const SignIn = () => {
           </div>
 
           {/* Image */}
-          <div className='hidden lg:flex justify-center'>
+          <div className='hidden lg:flex justify-center items-center bg-gray-50 dark:bg-gray-900'>
             <img
               src={signinImage}
               alt='Sign in illustration'
-              className='max-w-md w-full h-auto object-contain'
+              className='w-full h-full object-cover'
             />
           </div>
         </div>

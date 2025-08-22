@@ -80,7 +80,7 @@ const SignUp = () => {
           createdAt: new Date().toISOString(),
         },
         { merge: true }
-      ); // Use merge to avoid overwriting existing data
+      );
 
       toast.success('Signed up with Google!');
       navigate('/aitools');
@@ -103,9 +103,9 @@ const SignUp = () => {
 
       {/* Main content */}
       <div className='flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8'>
-        <div className='max-w-6xl w-full grid lg:grid-cols-2 gap-8 items-center'>
+        <div className='max-w-4xl w-full grid lg:grid-cols-2 gap-0 items-stretch rounded-xl shadow-lg overflow-hidden bg-white dark:bg-gray-800'>
           {/* Form */}
-          <div className='card p-6 sm:p-8 max-w-md mx-auto w-full'>
+          <div className='p-8 sm:p-12 w-full flex flex-col justify-center'>
             <h2 className='text-3xl font-bold text-gray-900 dark:text-white mb-6 text-center'>
               Create Account
             </h2>
@@ -210,11 +210,11 @@ const SignUp = () => {
           </div>
 
           {/* Image */}
-          <div className='hidden lg:flex justify-center -ml-4'>
+          <div className='hidden lg:flex justify-center items-center bg-gray-50 dark:bg-gray-900'>
             <img
               src={signupImage}
               alt='Sign up illustration'
-              className='max-w-md w-full h-auto object-contain'
+              className='w-full h-full object-cover'
             />
           </div>
         </div>

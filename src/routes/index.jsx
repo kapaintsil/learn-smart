@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
-import ProtectedRoute from '../components/ProtectedRoute';
-import LoadingSpinner from '../components/LoadingSpinner';
+import ProtectedRoute from '../Components/ProtectedRoute';
+import LoadingSpinner from '../Components/LoadingSpinner';
 import ErrorPage from '../Pages/Error/ErrorPage';
 
 // Lazy load components for code splitting

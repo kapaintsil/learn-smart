@@ -22,7 +22,7 @@ function HeroCards() {
             >
               {/* Logo */}
               <div className='w-16 h-16 mx-auto bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center 
-                              absolute -top-8 left-1/2 transform -translate-x-1/2 z-10 shadow-md
+                              absolute -top-5 left-1/2 transform -translate-x-1/2 z-10 shadow-md
                               group-hover:scale-110 transition-transform duration-300'>
                 <img
                   src={feature.logo}

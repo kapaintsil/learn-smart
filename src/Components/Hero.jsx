@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import heroImage from '../assets/images/hero-image.png';
+import { FiChevronsRight } from "react-icons/fi";
 
 function Hero() {
   const navigate = useNavigate();
@@ -49,10 +50,12 @@ function Hero() {
 
           <button
             onClick={handleGetStarted}
-            className='btn btn-primary text-lg px-8 py-4 hover:scale-105 transition-transform'
+            className='btn btn-primary flex items-center justify-center text-base sm:text-lg px-4 sm:px-8 py-3 sm:py-4 space-x-2 hover:scale-105 transition-transform'
           >
-            {user ? 'Go to Tools' : 'Get Started'}
+            <span>{user ? 'Go to Tools' : 'Get Started'}</span>
+            <FiChevronsRight className='w-4 h-4 sm:w-5 sm:h-5' />
           </button>
+
         </div>
 
         {/* Right side - Image */}

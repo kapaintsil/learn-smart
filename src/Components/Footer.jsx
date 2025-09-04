@@ -3,11 +3,11 @@ import footerLogo from '/icons/LS-logo.png';
 
 function Footer() {
   return (
-    <footer className=' dark:bg-gray-800 items-center justify-center'>
+    <footer className=' items-center justify-center flex flex-col'>
       <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
-        <div className='flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0'>
+        <div className='flex flex-col md:flex-row items-start justify-between space-y-4 md:space-y-0'>
           <div className='flex items-center'>
-            <img src={footerLogo} alt='Footer Logo' className='h-8 w-auto' />
+            <img src={footerLogo} alt='Footer Logo' className='h-10 w-auto' />
           </div>
           <div className='text-center md:text-right space-y-1'>
             <p className='text-sm text-gray-600 dark:text-gray-300'>

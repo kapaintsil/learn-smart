@@ -29,11 +29,11 @@ function Hero() {
   };
 
   return (
-    <section className='min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800'>
+    <section className='min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8  dark:from-gray-900 dark:to-gray-800'>
       <div className='max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center'>
         {/* Left side - Content */}
         <div className='space-y-8'>
-          <h1 className='text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight'>
+          <h1 className=' text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight'>
             {headline.map((part, index) => (
               <span key={index} className={part.className}>
                 {part.text}{' '}
@@ -60,7 +60,7 @@ function Hero() {
           <img
             src={heroImage}
             alt='Learning illustration'
-            className='w-full max-w-lg h-auto object-contain drop-shadow-2xl'
+            className='w-full max-w-lg h-auto object-contain '
           />
         </div>
       </div>

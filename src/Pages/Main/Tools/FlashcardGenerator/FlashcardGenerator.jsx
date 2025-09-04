@@ -145,15 +145,15 @@ ${content}`;
             </div>
 
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
-              {flashcards.map((card, idx) => (
+              {flashcards.map((card, index) => (
                 <div
-                  key={idx}
+                  key={index}
                   className='group cursor-pointer perspective-1000'
-                  onClick={() => toggleFlip(idx)}
+                  onClick={() => toggleFlip(index)}
                 >
                   <div
                     className={`relative w-full h-48 transition-transform duration-500 transform-style-preserve-3d ${
-                      flippedCards.includes(idx) ? 'rotate-y-180' : ''
+                      flippedCards.includes(index) ? 'rotate-y-180' : ''
                     }`}
                   >
                     {/* Front of card */}

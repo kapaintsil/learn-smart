@@ -14,9 +14,9 @@ const aiTools =[
     "status": "available"
   },
   {
-    "id": "flashcard-generator",
-    "name": "Flashcard Generator",
-    "icon": "/aiTools/Cd.png",
+    "id": "flashcard-Generator",
+    "name": "Flashcard",
+    "icon": "/aiTools/Flashcard-gen.png",
     "description": "Automatically creates flashcards from documents or pasted text.",
     "features": [
       "Question-answer format",
@@ -28,7 +28,7 @@ const aiTools =[
   },
   {
     "id": "quiz-generator",
-    "name": "Quiz Generator",
+    "name": "SmartQuiz",
     "icon": "/aiTools/smartQ.png",
     "description": "Generates multiple-choice or true/false quizzes from text or file input.",
     "features": [
@@ -41,7 +41,7 @@ const aiTools =[
   },
   {
     "id": "concept-explainer",
-    "name": "Concept Explainer",
+    "name": "ChatMate",
     "icon": "/aiTools/chatmate.png",
     "description": "Explains difficult academic concepts using analogies, steps, and examples.",
     "features": [
@@ -56,7 +56,7 @@ const aiTools =[
   {
     "id": "history",
     "name": "History",
-    "icon": "/aiTools/Group.png",
+    "icon": "/aiTools/History.png",
     "description": "Smart note organizer that auto-tags topics and summarizes key points.",
     "features": [
       "Extracts key ideas from notes",

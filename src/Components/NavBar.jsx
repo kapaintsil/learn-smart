@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { FiSun, FiMoon, FiLogOut } from 'react-icons/fi';
-import logo from '/icons/website-logo.png';
+import wm_Logo from '/icons/website-logo.png';
+import dm_Logo from '/icons/logo-dm.png';
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const NavBar = () => {
           {/* Logo */}
           <div className='flex items-center'>
             <img
-              src={logo}
+              src={isDark ? dm_Logo : wm_Logo}
               alt='Learn Smart Logo'
               onClick={() => navigate('/')}
               className='h-8 w-auto cursor-pointer hover:opacity-80 transition-opacity'

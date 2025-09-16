@@ -9,15 +9,15 @@ function Hero() {
   const { user } = useAuth();
 
   const headline = [
-    { text: 'A centralized', className: 'text-gray-600 dark:text-gray-400' },
+    { text: 'A centralized', className: 'text-[#001880]-600 dark:text-gray-400' },
     {
       text: 'AI - powered',
-      className: 'text-primary-600 dark:text-primary-400 font-semibold',
+      className: 'text-primary-600 dark:text-primary-400 ',
     },
-    { text: 'platform for', className: 'text-gray-600 dark:text-gray-400' },
+    { text: 'platform for', className: 'text-[#001880]-600 dark:text-gray-400' },
     {
       text: 'smarter learning',
-      className: 'text-primary-600 dark:text-primary-400 font-semibold',
+      className: 'text-primary-600 dark:text-primary-400',
     },
   ];
 
@@ -63,7 +63,7 @@ function Hero() {
           <img
             src={heroImage}
             alt='Learning illustration'
-            className='w-full max-w-lg h-auto object-contain '
+            className='w-full max-w-md h-auto object-contain '
           />
         </div>
       </div>

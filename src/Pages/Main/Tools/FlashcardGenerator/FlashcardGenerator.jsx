@@ -177,7 +177,7 @@ ${content}`;
                         <div className='text-sm text-primary-600 dark:text-primary-400 mb-2'>
                           {flashcardType === 'term' ? 'Definition' : 'Answer'}
                         </div>
-                        <div className='text-gray-900 dark:text-white font-medium leading-relaxed'>
+                        <div className='text-gray-900 text-xs dark:text-white font-medium leading-relaxed'>
                           {card.back}
                         </div>
                         <div className='mt-4 text-xs text-primary-500 dark:text-primary-400'>

@@ -2,7 +2,7 @@ const aiTools =[
   
   {
     "id": "study-planner",
-    "name": "Study Planner",
+    "name": "StudyTrack",
     "icon": "/aiTools/Brain.png",
     "description": "Creates personalized study schedules based on exam dates or learning goals.",
     "features": [
@@ -15,7 +15,7 @@ const aiTools =[
   },
   {
     "id": "flashcard-Generator",
-    "name": "Flashcard",
+    "name": "SmartDeck",
     "icon": "/aiTools/Flashcard-gen.png",
     "description": "Automatically creates flashcards from documents or pasted text.",
     "features": [

@@ -10,6 +10,30 @@ export const useTheme = () => {
   return context;
 };
 
+/**
+ * ThemeProvider component that provides theme-related context to its children.
+ * 
+ * This component manages a dark/light theme state, persists the theme preference
+ * in localStorage, and applies the appropriate class to the root HTML element.
+ * It also provides a method to toggle the theme.
+ * 
+ * @component
+ * @param {Object} props - The props object.
+ * @param {React.ReactNode} props.children - The child components that will have access to the theme context.
+ * 
+ * @returns {JSX.Element} The ThemeContext.Provider component wrapping the children.
+ * 
+ * @example
+ * <ThemeProvider>
+ *   <App />
+ * </ThemeProvider>
+ * 
+ * @context
+ * The context value includes:
+ * - {boolean} isDark - Indicates whether the dark theme is active.
+ * - {Function} toggleTheme - Function to toggle between dark and light themes.
+ */
+
 export const ThemeProvider = ({ children }) => {
   const [isDark, setIsDark] = useState(() => {
     // Check localStorage first, then system preference

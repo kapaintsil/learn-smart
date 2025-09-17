@@ -29,8 +29,11 @@ const History = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Ensure the user is authenticated before proceeding
     if (!auth.currentUser) return;
 
+    // Create a query to fetch the user's generated items from Firestore
+    // The items are ordered by their creation date in descending order
     const q = query(
       collection(db, `users/${auth.currentUser.uid}/generatedItems`),
       orderBy('createdAt', 'desc')

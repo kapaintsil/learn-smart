@@ -63,7 +63,7 @@ const FlashcardGenerator = () => {
 
     try {
       const content = useText ? textInput : await handleFileUpload(file);
-      const prompt = `From the content below, generate 10 ${
+      const prompt = `From the content below, generate 10 without any introduction ${
         flashcardType === 'term' ? 'Term and Definition' : 'Question and Answer'
       } flashcards. Format as:
 
@@ -103,16 +103,16 @@ ${content}`;
   };
 
   const handleDownload = () => {
-    if (!flashcards.length) return toast.error('No flashcards to download.');
+    if (!flashcards.length) return toast.error('No flashcards to download.');  // Check if there are flashcards to download
     const text = flashcards
-      .map((c, i) => `Card ${i + 1}\nFront: ${c.front}\nBack: ${c.back}\n\n`)
-      .join('');
+      .map((c, i) => `Card ${i + 1}\nFront: ${c.front}\nBack: ${c.back}\n\n`)  // Format each flashcard with number, front and back
+      .join('');  // Join all cards into one string
     downloadPlan(
       text,
-      `${title || 'flashcards'}.pdf`,
-      title || 'Generated Flashcards'
+      `${title || 'flashcards'}.pdf`,  // Use provided title or default to 'flashcards'
+      title || 'Generated Flashcards'   // Use provided title or default for PDF header
     );
-    toast.success('Flashcards downloaded as PDF!');
+    toast.success('Flashcards downloaded as PDF!');  // Show success message
   };
 
   return (

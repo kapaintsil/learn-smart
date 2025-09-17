@@ -6,6 +6,34 @@ import { FiSun, FiMoon, FiLogOut } from 'react-icons/fi';
 import wm_Logo from '/icons/website-logo.png';
 import dm_Logo from '/icons/logo-dm.png';
 
+/**
+ * NavBar component renders a responsive navigation bar with the following features:
+ * - A logo that navigates to the home page when clicked.
+ * - A theme toggle button to switch between light and dark modes.
+ * - User authentication options:
+ *   - If a user is logged in, it displays a greeting with the user's name and a sign-out button.
+ *   - If no user is logged in, it displays "Sign In" and "Sign Up" buttons.
+ *
+ * Props:
+ * - None
+ *
+ * Hooks:
+ * - `useNavigate`: Used to navigate between routes.
+ * - `useAuth`: Provides `user` (current user object) and `logout` (function to log out the user).
+ * - `useTheme`: Provides `isDark` (boolean indicating the current theme) and `toggleTheme` (function to toggle the theme).
+ *
+ * Dependencies:
+ * - React icons: `FiSun`, `FiMoon`, and `FiLogOut` for rendering icons.
+ *
+ * Styling:
+ * - Uses Tailwind CSS classes for styling and responsiveness.
+ *
+ * Accessibility:
+ * - Includes `aria-label` attributes for buttons to improve accessibility.
+ *
+ * @component
+ */
+
 const NavBar = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();

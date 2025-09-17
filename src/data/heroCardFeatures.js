@@ -2,7 +2,7 @@ const heroCardFeatures = [
   {
     title: 'Seamless Integration',
     description:
-      'Access essential learning tools, from writing assistants to transcribers all in one place',
+      'Access essential learning tools, from quiz generators to tailored chatbot all in one place',
     logo: 'heroCard/integration.png',
   },
   {

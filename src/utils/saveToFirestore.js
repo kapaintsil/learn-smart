@@ -5,7 +5,7 @@ const saveToFirestore = async (collectionName, data, retries = 3) => {
   if (!auth.currentUser) {
     console.error("saveToFirestore: No authenticated user");
     throw new Error('User not authenticated');
-  }
+  } 
 
   const itemId = doc(collection(db, `users/${auth.currentUser.uid}/${collectionName}`)).id;
   const itemData = {

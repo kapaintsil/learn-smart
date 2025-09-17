@@ -15,19 +15,24 @@ import {
   FiFile,
 } from 'react-icons/fi';
 
+/**
+ * QuizGenerator Component
+ * A React component that generates quizzes using AI based on uploaded files or text input
+ */
 function QuizGenerator() {
+  // State management using React hooks
   const { state } = useLocation();
-  const [file, setFile] = useState(null);
-  const [textInput, setTextInput] = useState('');
-  const [useText, setUseText] = useState(false);
-  const [questionCount, setQuestionCount] = useState(10);
-  const [difficulty, setDifficulty] = useState('medium');
-  const [format, setFormat] = useState('mcq');
-  const [quiz, setQuiz] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [file, setFile] = useState(null); // Stores uploaded file
+  const [textInput, setTextInput] = useState(''); // Stores text input
+  const [useText, setUseText] = useState(false); // Toggle between file/text input
+  const [questionCount, setQuestionCount] = useState(10); // Number of questions
+  const [difficulty, setDifficulty] = useState('medium'); // Quiz difficulty
+  const [format, setFormat] = useState('mcq'); // Quiz format (MCQ/True-False)
+  const [quiz, setQuiz] = useState(''); // Stores generated quiz
+  const [loading, setLoading] = useState(false); // Loading state
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Auth state
 
-  // Monitor auth state
+  // Monitor authentication state changes
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(user => {
       setIsAuthenticated(!!user);
@@ -35,7 +40,7 @@ function QuizGenerator() {
     return () => unsubscribe();
   }, []);
 
-  // Load saved quiz from History
+  // Load saved quiz data from History state
   useEffect(() => {
     if (state?.savedData) {
       const { title, content, quiz, questionCount, difficulty, format } =
@@ -49,7 +54,12 @@ function QuizGenerator() {
     }
   }, [state]);
 
+  /**
+   * Handles quiz generation process
+   * Validates input, generates quiz using AI, and saves result
+   */
   const handleGenerateQuiz = async () => {
+    // Input validation
     if (!useText && !file) {
       toast.error('Please upload a file or enter text content.');
       return;
@@ -63,21 +73,24 @@ function QuizGenerator() {
     setQuiz('');
 
     try {
+      // Get content from file or text input
       const content = useText ? textInput : await handleFileUpload(file);
 
+      // Construct prompt for AI
       const prompt = `Generate a ${questionCount}-question ${
         format === 'tf' ? 'true/false' : 'multiple-choice'
       } quiz with answers and explanations. Difficulty: ${difficulty}.\n\n${content}`;
 
+      // Generate quiz using AI
       const result = await model.generateContent(prompt);
       const response = await result.response;
       const text = await response.text();
 
       setQuiz(text);
 
+      // Handle unauthenticated users
       if (!isAuthenticated || !auth.currentUser) {
         toast.info('Quiz generated but not saved (please sign in).');
-        // Save to local storage only
         addQuiz({
           title: `Quiz (${difficulty}) - ${new Date().toLocaleDateString()}`,
           type: 'quiz',
@@ -91,6 +104,7 @@ function QuizGenerator() {
         return;
       }
 
+      // Save quiz data
       const itemData = {
         type: 'quiz',
         title: `Quiz (${difficulty}) - ${new Date().toLocaleDateString()}`,
@@ -101,6 +115,7 @@ function QuizGenerator() {
         format,
       };
 
+      // Save to Firestore and handle response
       const itemId = await saveToFirestore('generatedItems', itemData);
       if (!itemId) {
         toast.error('Failed to save quiz.');
@@ -108,7 +123,6 @@ function QuizGenerator() {
         toast.success('Quiz saved successfully!');
       }
 
-      // Save to local storage
       addQuiz(itemData);
     } catch (error) {
       toast.error('Error generating quiz: ' + error.message);
@@ -118,6 +132,9 @@ function QuizGenerator() {
     }
   };
 
+
+   // Handles downloading quiz as PDF
+   
   const handleDownload = () => {
     if (quiz) {
       downloadPlan(quiz, 'quiz.pdf', 'Generated Quiz');
@@ -125,6 +142,9 @@ function QuizGenerator() {
     }
   };
 
+  /**
+   * Returns appropriate color classes based on difficulty level
+   */
   const getDifficultyColor = diff => {
     switch (diff) {
       case 'easy':

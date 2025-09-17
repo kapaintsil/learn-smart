@@ -1,5 +1,5 @@
 import React from 'react';
-import footerLogo from '/icons/LS-logo.png';
+import footerLogo from '/icons/icons/plane.png';
 
 function Footer() {
   return (
@@ -12,7 +12,7 @@ function Footer() {
             <img
               src={footerLogo}
               alt='Footer Logo'
-              className='h-10 w-auto transition-transform duration-300 hover:scale-105'
+              className='h-14 w-auto transition-transform duration-300 hover:scale-105'
             />
           </div>
 
@@ -25,7 +25,6 @@ function Footer() {
               © 2025 LearnSmart. All rights reserved.
             </p>
           </div>
-
         </div>
       </div>
     </footer>

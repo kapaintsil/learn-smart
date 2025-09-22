@@ -37,6 +37,8 @@
 <ul>
   <li><strong>Frontend:</strong> React (with React Router)</li>
   <li><strong>Backend & Hosting:</strong> Firebase (Authentication, Firestore, Storage, Hosting)</li>
+  <li><strong>Frontend Hosting:</strong> Vercel</li>
+  <li><strong>AI Model:</strong> Google Gemini 2.5 (via Generative AI API)</li>
   <li><strong>AI Model:</strong> Google Gemini 2.5 (via Generative AI API)</li>
   <li><strong>PDF & DOCX Export:</strong> jsPDF, file-saver</li>
   <li><strong>Version Control:</strong> Git</li>

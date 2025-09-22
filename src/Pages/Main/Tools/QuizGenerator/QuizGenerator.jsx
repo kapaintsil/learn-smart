@@ -77,7 +77,7 @@ function QuizGenerator() {
       const content = useText ? textInput : await handleFileUpload(file);
 
       // Construct prompt for AI
-      const prompt = `Generate a ${questionCount}-question ${
+      const prompt = `Generate a neatly formatted ${questionCount}-question ${
         format === 'tf' ? 'true/false' : 'multiple-choice'
       } quiz with answers and explanations. Difficulty: ${difficulty}.\n\n${content}`;
 

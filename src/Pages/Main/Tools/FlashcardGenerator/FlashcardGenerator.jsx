@@ -63,7 +63,7 @@ const FlashcardGenerator = () => {
 
     try {
       const content = useText ? textInput : await handleFileUpload(file);
-      const prompt = `From the content below, generate 10 without any introduction ${
+      const prompt = `From the content below, generate 12 without any introduction ${
         flashcardType === 'term' ? 'Term and Definition' : 'Question and Answer'
       } flashcards. Format as:
 

@@ -64,13 +64,13 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to='quiz-generator' replace />,
+        element: <Navigate to='study-planner' replace />,
       },
       {
-        path: 'quiz-generator',
+        path: 'study-planner',
         element: (
           <Suspense fallback={<LoadingSpinner />}>
-            <QuizGenerator />
+            <StudyPlanner />
           </Suspense>
         ),
         errorElement: <ErrorPage />,
@@ -85,10 +85,10 @@ export const router = createBrowserRouter([
         errorElement: <ErrorPage />,
       },
       {
-        path: 'study-planner',
+        path: 'quiz-generator',
         element: (
           <Suspense fallback={<LoadingSpinner />}>
-            <StudyPlanner />
+            <QuizGenerator />
           </Suspense>
         ),
         errorElement: <ErrorPage />,

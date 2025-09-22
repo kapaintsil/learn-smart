@@ -13,6 +13,17 @@
 
 <hr>
 
+<h2>🌍 Live Demo / Hosting</h2>
+
+<p>
+  You can access the hosted version of LearnSmart AI Assistant here:  
+  <a href="https://your-firebase-hosting-link.web.app" target="_blank">
+    https://your-firebase-hosting-link.web.app
+  </a>
+</p>
+
+<hr>
+
 <h2>🚀 Features</h2>
 
 <h3>🔹 AI Tools</h3>

@@ -63,7 +63,7 @@ src/
 
 <ol>
   <li>Clone the repo:
-    <pre><code>git clone https://github.com/your-username/learnsmart-ai-assistant.git
+    <pre><code>git clone git@github.com:kapaintsil/learn-smart.git
 cd learnsmart-ai-assistant</code></pre>
   </li>
   <li>Install dependencies:
